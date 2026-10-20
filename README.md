@@ -41,7 +41,7 @@ draft: true
 
 사이트: https://kimdongui.github.io/
 
-저장소: https://github.com/Kimdongui/Kimdongui.github.io
+저장소: https://github.com/Kimdongui/kimdongui.github.io
 
 `main` 브랜치에 push하면 `Deploy blog to GitHub Pages` 워크플로가 빌드하고 자동 배포합니다. 저장소 **Settings → Pages → Source**는 **GitHub Actions**를 사용합니다.
 
