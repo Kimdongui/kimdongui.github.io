@@ -1,0 +1,22 @@
+{
+  "name": "kimdongui-blog",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro check && astro build",
+    "preview": "astro preview --host 127.0.0.1",
+    "check": "astro check",
+    "new": "node scripts/new-post.mjs"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "dependencies": {
+    "@astrojs/check": "0.9.11",
+    "@astrojs/rss": "4.0.19",
+    "astro": "7.4.1",
+    "typescript": "6.0.3"
+  }
+}

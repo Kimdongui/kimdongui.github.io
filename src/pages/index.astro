@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { getPosts } from '../lib/posts';
+const posts = await getPosts();
+---
+<Base>
+  <div class="list-summary"><span>모든 글</span><span class="count">{posts.length.toString().padStart(2, '0')}</span></div>
+  {posts.length ? <PostList posts={posts} /> : <section class="empty-state" aria-label="아직 게시된 글 없음"><span class="empty-mark" aria-hidden="true">✳</span><h2>아직 작성된 글이 없어요.</h2><p>첫 번째 기록을 준비하고 있습니다.</p></section>}
+</Base>

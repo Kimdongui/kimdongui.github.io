@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts } from '../../lib/posts';
+const posts = await getPosts();
+const counts = new Map<string, number>();
+for (const post of posts) for (const tag of new Set(post.data.tags)) counts.set(tag, (counts.get(tag) || 0) + 1);
+const tags = [...counts.entries()].sort(([a], [b]) => a.localeCompare(b, 'ko'));
+---
+<Base title="태그" active="tags">
+  {posts.length ? <>
+    <div class="tag-picker" role="group" aria-label="태그로 글 찾기"><button type="button" data-tag="" aria-pressed="true">전체 <span>{posts.length}</span></button>{tags.map(([tag, count]) => <button type="button" data-tag={tag} aria-pressed="false">{tag}<span>{count}</span></button>)}</div>
+    <p class="filter-summary" aria-live="polite">전체 {posts.length}개의 글</p>
+    <PostList posts={posts} />
+    <p id="no-tag-results" class="empty-state" hidden>이 태그로 작성된 글이 없습니다.</p>
+  </> : <section class="empty-state"><span class="empty-mark" aria-hidden="true">#</span><h2>아직 등록된 태그가 없어요.</h2><p>글이 쌓이면 주제별로 모아볼 수 있어요.</p></section>}
+  <script>
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-tag]')];
+    const rows = [...document.querySelectorAll<HTMLElement>('[data-post-tags]')];
+    const summary = document.querySelector('.filter-summary');
+    function filter(tag: string, updateUrl: boolean) {
+      let count = 0;
+      rows.forEach(row => {
+        const tags: string[] = JSON.parse(row.dataset.postTags || '[]');
+        row.hidden = Boolean(tag) && !tags.includes(tag);
+        if (!row.hidden) count++;
+      });
+      buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.tag === tag)));
+      if (summary) summary.textContent = `${tag || '전체'} · ${count}개의 글`;
+      const empty = document.getElementById('no-tag-results');
+      if (empty) empty.hidden = count > 0;
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (tag) url.searchParams.set('tag', tag); else url.searchParams.delete('tag');
+        history.replaceState(null, '', url);
+      }
+    }
+    buttons.forEach(button => button.addEventListener('click', () => filter(button.dataset.tag || '', true)));
+    filter(new URLSearchParams(location.search).get('tag') || '', false);
+    window.addEventListener('popstate', () => filter(new URLSearchParams(location.search).get('tag') || '', false));
+  </script>
+</Base>
